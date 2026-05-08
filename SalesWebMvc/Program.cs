@@ -11,6 +11,8 @@ builder.Services.AddDbContext<SalesWebMvcContext>(options =>
     )
 );
 
+builder.Services.AddScoped<SeedingService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -34,5 +36,16 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Reconhece caso o app esteja em desenvolvimento, popular a base de dados
+using (var scope = app.Services.CreateScope())
+{
+    var seedingService = scope.ServiceProvider.GetRequiredService<SeedingService>();
+
+    if (app.Environment.IsDevelopment())
+    {
+        seedingService.Seed();
+    }
+}
 
 app.Run();
