@@ -1,5 +1,7 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Localization;
 using SalesWebMvc.Data;
 using SalesWebMvc.Services;
 
@@ -21,6 +23,17 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Localization configure
+var enUS = new CultureInfo("en-US");
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(enUS),
+    SupportedCultures = new List<CultureInfo> { enUS },
+    SupportedUICultures = new List<CultureInfo> { enUS }
+};
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -31,6 +44,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseRouting();
 
